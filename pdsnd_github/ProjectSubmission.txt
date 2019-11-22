@@ -1,0 +1,532 @@
+import time
+import pandas as pd
+import numpy as np
+from scipy import stats
+from pandas import ExcelWriter
+from pandas import ExcelFile
+CITY_DATA = { 'chicago': r'C:\Users\ghost\Downloads\chicago.csv',
+              'new york city': r'C:\Users\ghost\Downloads\new_york_city.csv'
+            ,'washington': r'C:\Users\ghost\Downloads\washington.csv'}
+start_time = time.time()
+def get_filters(): 
+    
+    """
+    Asks user to specify a city, month, and day to analyze.
+print ('Welcome! , please provide us with below informations to serve you : ')
+    Returns:
+        (str) city - name of the city to analyze
+        (str) month - name of the month to filter by, or "all" to apply no month filter
+        (str) day - name of the day of week to filter by, or "all" to apply no day filter
+    """
+    print('Hello! Let\'s explore some US bikeshare data!')
+    # TO DO: get user input for city (chicago, new york city, washington). HINT: Use a while loop to handle invalid inputs
+#*****************************************************************************
+    # ask the user for city input
+    number =1    
+    while number == 1:
+        city = input("Please enter the desired city, and not a number: \n 1-Chicago \n 2-new york \n 3- washington \n please choose from the options with the correct spelling\n").lower()
+        if (city == 'chicago' or city == 'new york city' or city == 'washington'):
+            number  = number + 1
+        else:
+            print('Invalid input, please try again :')
+        
+        type(city)     
+#************************Done*********************************************    
+#****************************************************************************
+
+     # ask the user for month input   
+    numbero =1    
+    while numbero == 1:
+        month = input("What is the desired month? \n please choose month between January and june with the correct spelling :\n").lower()
+        if (month == 'january' or month == 'february' or month == 'march' or month == 'april' or month == 'may' or month == 'june'):
+            numbero  = numbero + 1
+        else:
+            print('Invalid input, please try again :\n')
+        
+        type(month)             
+#*******************************Done**********************************************
+
+#*******************************Done********************************************
+      # ask the user for day of week input  
+    numbera =1    
+    while numbera == 1:
+        day = input("What is the desired day of the week? \n please write the correct spelling :\n").lower()
+        if (day == 'monday' or day == 'tuesday' or day == 'wednesday' or day == 'thursday' or day == 'friday' or day == 'saturday' or day == 'sunday'):
+            numbera  = numbera + 1
+        else:
+            print('Invalid input, please try again :\n')
+        
+        type(day)         
+#****************************Done***********************************************
+    
+    return city, month, day
+
+print('-'*40)
+
+
+
+def load_data(city, month, day):
+    """
+    Loads data for the specified city and filters by month and day if applicable.
+
+    Args:
+        (str) city - name of the city to analyze
+        (str) month - name of the month to filter by, or "all" to apply no month filter
+        (str) day - name of the day of week to filter by, or "all" to apply no day filter
+    Returns:
+        df - Pandas DataFrame containing city data filtered by month and day
+    """
+    df = pd.read_csv(CITY_DATA[city])
+    print(df)
+    # convert the Start Time column to datetime
+    df['Start Time'] = pd.to_datetime(df['Start Time'])
+
+    # extract month and day of week from Start Time to create new columns
+    df['month'] = df['Start Time'].dt.month
+    df['day_of_week'] = df['Start Time'].dt.weekday_name
+
+    # filter by month if applicable
+    if month != 'all':
+        # use the index of the months list to get the corresponding int
+        months = ['january', 'february', 'march', 'april', 'may', 'june']
+        month = months.index(month) + 1
+
+        # filter by month to create the new dataframe
+        df = df[df['month'] == month]
+
+    # filter by day of week if applicable
+    if day != 'all':
+        # filter by day of week to create the new dataframe
+        df = df[df['day_of_week'] == day.title()]
+
+    
+    return df
+
+#****************************************************
+def time_stats(df,city):
+    """Displays statistics on the most frequent times of travel."""
+
+    print('\nCalculating The Most Frequent Times of Travel...\n')
+    start_time = time.time()
+
+    # TO DO: display the most common month
+
+# load data file into a dataframe
+    df = pd.read_csv(CITY_DATA[city])
+# load data file into a dataframe
+
+# convert the Start Time column to datetime
+    df['Start Time'] = pd.to_datetime(df['Start Time'])
+
+    df['month'] = df['Start Time'].dt.month
+    monthly = df['month']
+    # to display the mode from the extracted month column
+    
+    common_month = df['month'].mode()[0]
+    #*********loop*To*Display*Statistics*********
+    # and to display the mode through manual itteration with the option of getting the right value directly for the entire data if the user decided not to continue with observing the data manually
+    numb =1
+    rownum =0
+    whileformat = 1
+    while numb == 1:
+        # these if conditions are just for th, st , nd to make the comments more organized for the user . ^_^"
+        if whileformat == 1 :
+            ans = input("Do you want to represent {}st 5 rows of months data? Type yes if so  :\n".format(whileformat)).lower()
+        elif whileformat == 2 :
+            ans = input("Do you want to represent {}nd 5 rows of months data? Type yes if so  :\n".format(whileformat)).lower()
+        elif whileformat == 3 :    
+            ans = input("Do you want to represent {}rd 5 rows of months data? Type yes if so  :\n".format(whileformat)).lower()
+        else :
+            ans = input("Do you want to represent {}th 5 rows of months data? Type yes if so  :\n".format(whileformat)).lower()
+        if (ans == 'yes'):
+            i =0
+            j =0
+            empty_array= {}
+            while i < 5 :
+                month_current_itteration = df['month'].ix[rownum,:]
+
+                print('month index : ',month_current_itteration,'\n ---------\n')
+                
+                rownum = rownum + 1
+                i = i+1
+        
+            whileformat = whileformat + 1
+        elif (ans == 'no'):
+            numb  = numb + 1
+            print('However, most common month regarding the entire data is {}'.format(common_month))
+        else :
+            print('Invalid input please try again, answer yes or no; if you want to represent the next 5 rows of data .. \n')
+
+#********End*Of*Loop***************
+
+    # TO DO: display the most common day of week
+    df['day'] = df['Start Time'].dt.weekday
+    common_day = df['day'].mode()[0]
+
+    numb1 =1
+    rownum1 =0
+    whileformat1 = 1
+    while numb1 == 1:
+        # these if conditions are just for th, st , nd to make the comments more organized for the user . ^_^"
+        if whileformat1 == 1 :
+            ans = input("Do you want to represent {}st 5 rows of days data? Type yes if so  :\n".format(whileformat1)).lower()
+        elif whileformat1 == 2 :
+            ans = input("Do you want to represent {}nd 5 rows of days data? Type yes if so  :\n".format(whileformat1)).lower()
+        elif whileformat1 == 3 :    
+            ans = input("Do you want to represent {}rd 5 rows of days data? Type yes if so  :\n".format(whileformat1)).lower()
+        else :
+            ans = input("Do you want to represent {}th 5 rows of days data? Type yes if so  :\n".format(whileformat1)).lower()
+        if (ans == 'yes'):
+            i =0
+            j =0
+            empty_array= {}
+            while i < 5 :
+                day_current_itteration = df['day'].ix[rownum1,:]
+
+                print('day index : ',day_current_itteration,'\n ---------\n')
+                
+                rownum1 = rownum1 + 1
+                i = i+1
+        
+            whileformat1 = whileformat1 + 1
+        elif (ans == 'no'):
+            numb1  = numb1 + 1
+            print('However, most common day regarding the entire data is {}'.format(common_day))
+        else :
+            print('Invalid input please try again, answer yes or no; if you want to represent the next 5 rows of data .. \n')
+    
+    
+    # TO DO: display the most common start hour
+    df['hour'] = df['Start Time'].dt.hour
+    common_hour = df['hour'].mode()[0]
+
+    numb2 =1
+    rownum2 =0
+    whileformat2 = 1
+    while numb2 == 1:
+        # these if conditions are just for th, st , nd to make the comments more organized for the user . ^_^"
+        if whileformat2 == 1 :
+            ans = input("Do you want to represent {}st 5 rows of hours data? Type yes if so  :\n".format(whileformat2)).lower()
+        elif whileformat2 == 2 :
+            ans = input("Do you want to represent {}nd 5 rows of hours data? Type yes if so  :\n".format(whileformat2)).lower()
+        elif whileformat2 == 3 :    
+            ans = input("Do you want to represent {}rd 5 rows of hours data? Type yes if so  :\n".format(whileformat2)).lower()
+        else :
+            ans = input("Do you want to represent {}th 5 rows of hours data? Type yes if so  :\n".format(whileformat2)).lower()
+        if (ans == 'yes'):
+            i =0
+            j =0
+            empty_array= {}
+            while i < 5 :
+                hour_current_itteration = df['hour'].ix[rownum2,:]
+
+                print('hour index : ',hour_current_itteration,'\n ---------\n')
+                
+                rownum2 = rownum2 + 1
+                i = i+1
+        
+            whileformat2 = whileformat2 + 1
+        elif (ans == 'no'):
+            numb2  = numb2 + 1
+            print('However, most common hour regarding the entire data is {}'.format(common_hour))
+        else :
+            print('Invalid input please try again, answer yes or no; if you want to represent the next 5 rows of data .. \n')
+    
+    
+    print("\nThis took %s seconds." % (time.time() - start_time))
+
+    return df
+
+print('-'*40)
+#**************************************************************************
+#**************************************************************************
+def station_stats(df,city):
+    """Displays statistics on the most popular stations and trip."""
+
+    print('\nCalculating The Most Popular Stations and Trip...\n')
+    start_time = time.time()
+
+    # TO DO: display most commonly used start station
+# load data file into a dataframe
+    df = pd.read_csv(CITY_DATA[city])
+
+# convert the Start Time column to datetime
+    df['Start Time'] = pd.to_datetime(df['Start Time'])
+
+    # TO DO: display most commonly used end station
+    df['Start Time'] = pd.to_datetime(df['Start Time'])
+    popular_endstation = df['End Station'].mode()[0]
+    # TO DO: display most frequent combination of start station and end station trip
+
+    df['Strt&EndCmn'] = df['Start Station'].str.cat(df['End Station'], sep =" & ") 
+
+    popular_startend = df['Strt&EndCmn'].mode()[0]
+
+    print(df) 
+    print("\nThis took %s seconds." % (time.time() - start_time))
+#*********loop*To*Display*Statistics*********
+    return df
+"""
+    numb =1
+    rownum =0
+    whileformat = 1
+    while numb == 1:
+        # these if conditions are just for th, st , nd to make the comments more organized for the user . ^_^"
+        if whileformat == 1 :
+            ans = input("Do you want to represent {}st 5 rows of months data? Type yes if so  :\n".format(whileformat)).lower()
+        elif whileformat == 2 :
+            ans = input("Do you want to represent {}nd 5 rows of months data? Type yes if so  :\n".format(whileformat)).lower()
+        elif whileformat == 3 :    
+            ans = input("Do you want to represent {}rd 5 rows of months data? Type yes if so  :\n".format(whileformat)).lower()
+        else :
+            ans = input("Do you want to represent {}th 5 rows of months data? Type yes if so  :\n".format(whileformat)).lower()
+        if (ans == 'yes'):
+            i =0
+            j =0
+            empty_array= {}
+            while i < 5 :
+                month_current_itteration = df['month'].ix[rownum,:]
+
+                print('month index : ',month_current_itteration,'\n ---------\n')
+                
+                rownum = rownum + 1
+                i = i+1
+        
+            whileformat = whileformat + 1
+        elif (ans == 'no'):
+            numb  = numb + 1
+            print('However, most common month regarding the entire data is {}'.format(common_month))
+        else :
+            print('Invalid input please try again, answer yes or no; if you want to represent the next 5 rows of data .. \n')
+
+        """
+#********End*Of*Loop***************
+    
+    
+    
+print('-'*40)
+
+#******************************************************************
+#******************************************************************
+def trip_duration_stats(df,city):
+    """Displays statistics on the total and average trip duration."""
+    start_time = time.time()
+# load data file into a dataframe
+    df = pd.read_csv(CITY_DATA[city])
+    
+    print('\nCalculating Trip Duration...\n')
+
+    # TO DO: display total travel time
+
+    df['Trip Duration'].sum()
+    
+    
+    # TO DO: display mean travel time
+
+    df['Trip Duration'].mean()
+#*********loop*To*Display*Statistics*********
+
+
+#********End*Of*Loop***************
+    print("\nThis took %s seconds." % (time.time() - start_time))
+    
+    return df
+print('-'*40)
+
+
+def user_stats(df,city):
+    """Displays statistics on bikeshare users."""
+
+    print('\nCalculating User Stats...\n')
+    start_time = time.time()
+
+    # TO DO: Display counts of user types
+    df = pd.read_csv(CITY_DATA[city])
+
+    
+    
+#*********************************************************************************************
+# print value counts for each user type
+    user_types = df['User Type'].value_counts()
+    print(user_types)
+     
+#*********loop*To*Display*Statistics*********
+
+    numb4 =1
+    rownum4 =0
+    whileformat4 = 1
+    while numb4 == 1:
+        # these if conditions are just for th, st , nd to make the comments more organized for the user . ^_^"
+        if whileformat4 == 1 :
+            ans = input("Do you want to represent {}st 5 rows of User Type data? Type yes if so  :\n".format(whileformat4)).lower()
+        elif whileformat4 == 2 :
+            ans = input("Do you want to represent {}nd 5 rows of User Type data? Type yes if so  :\n".format(whileformat4)).lower()
+        elif whileformat4 == 3 :    
+            ans = input("Do you want to represent {}rd 5 rows of User Type data? Type yes if so  :\n".format(whileformat4)).lower()
+        else :
+            ans = input("Do you want to represent {}th 5 rows of User Type data? Type yes if so  :\n".format(whileformat4)).lower()
+        if (ans == 'yes'):
+            i =0
+            j =0
+            empty_array= {}
+            while i < 5 :
+                UT_current_itteration = df['User Type'].ix[rownum4,:]
+
+                print('User Type : ',UT_current_itteration,'\n ---------\n')
+                
+                rownum4 = rownum4 + 1
+                i = i+1
+        
+            whileformat4 = whileformat4 + 1
+        elif (ans == 'no'):
+            numb4  = numb4 + 1
+            print('However, most common user type regarding the entire data is {}'.format(user_types))
+        else :
+            print('Invalid input please try again, answer yes or no; if you want to represent the next 5 rows of data .. \n')
+
+#********End*Of*Loop***************    
+    print("\nThis took %s seconds." % (time.time() - start_time))
+      
+    return df
+print('-'*40)
+#***********************************Done**********************************************************
+ # A Condition function if washington is the input then skip this function because washington file doesnt have this data column 
+#def gender_condition(city):
+ #   df = pd.read_csv(CITY_DATA[city])
+  #  if city == 'washington':
+   #     pass
+    #else :
+     
+def user_gender(df,city):
+    if city == 'washington':
+        pass
+    else :
+        print('\nCalculating genders...\n')
+        start_time = time.time()
+        df = pd.read_csv(CITY_DATA[city])
+
+    # TO DO: Display counts of gender
+        gender = df['Gender'].value_counts()
+        print(gender)
+#*********loop*To*Display*Statistics*********
+
+
+        numb5 =1
+        rownum5 =0
+        whileformat5 = 1
+        while numb5 == 1:
+        # these if conditions are just for th, st , nd to make the comments more organized for the user . ^_^"
+            if whileformat5 == 1 :
+                ans = input("Do you want to represent {}st 5 rows of gender data? Type yes if so  :\n".format(whileformat5)).lower()
+            elif whileformat5 == 2 :
+                ans = input("Do you want to represent {}nd 5 rows of gender data? Type yes if so  :\n".format(whileformat5)).lower()
+            elif whileformat5 == 3 :    
+                ans = input("Do you want to represent {}rd 5 rows of gender data? Type yes if so  :\n".format(whileformat5)).lower()
+            else :
+                ans = input("Do you want to represent {}th 5 rows of gender data? Type yes if so  :\n".format(whileformat5)).lower()
+            if (ans == 'yes'):
+                i =0
+                j =0
+                empty_array= {}
+                while i < 5 :
+                    gender_current_itteration = df['Gender'].ix[rownum5,:]
+                    #rint(gender)
+                    print('gender : ',gender_current_itteration,'\n ---------\n')
+                
+                    rownum5 = rownum5 + 1
+                    i = i+1
+        
+                whileformat5 = whileformat5 + 1
+            elif (ans == 'no'):
+                numb5  = numb5 + 1
+                print('However, most common gender regarding the entire data is \n{} '.format(gender))
+            else :
+                print('Invalid input please try again, answer yes or no; if you want to represent the next 5 rows of data .. \n')
+
+#********End*Of*Loop***************    
+            print("\nThis took %s seconds." % (time.time() - start_time))
+    # TO DO: Display earliest, most recent, and most common year of birth
+            return df
+     
+def user_BD(df,city):
+    if city == 'washington':
+        pass
+    else :
+        print('\nCalculating birth days...\n')
+            
+        df = pd.read_csv(CITY_DATA[city])
+    
+        BD = df['Birth Year'].max()
+        BD1 = df['Birth Year'].min()
+        BD2 = df['Birth Year'].mode()[0]
+
+        print('Oldest date of birth is :',BD1,'With age of :',2019-BD1 ,'\n')
+        print('Youngest date of birth is :',BD,'With age of :',2019-BD ,'\n')
+        print('most common date of birth is :',BD2,'With age of :',2019-BD2 ,'\n')
+        print("\nThis took %s seconds." % (time.time() - start_time))
+
+#*********loop*To*Display*Statistics*********
+
+
+        numb6 = 1
+        rownum6 = 0
+        whileformat6 = 1
+        while numb6== 1:
+        # these if conditions are just for th, st , nd to make the comments more organized for the user . ^_^"
+            if whileformat6 == 1 :
+                ans = input("Do you want to represent {}st 5 rows of births data? Type yes if so  :\n".format(whileformat6)).lower()
+            elif whileformat6 == 2 :
+                ans = input("Do you want to represent {}nd 5 rows of births data? Type yes if so  :\n".format(whileformat6)).lower()
+            elif whileformat6 == 3 :    
+                ans = input("Do you want to represent {}rd 5 rows of births data? Type yes if so  :\n".format(whileformat6)).lower()
+            else :
+                ans = input("Do you want to represent {}th 5 rows of births data? Type yes if so  :\n".format(whileformat6)).lower()
+            if (ans == 'yes'):
+                i =0
+                j =0
+                empty_array= {}
+                while i < 5 :
+                    BD_current_itteration = df['Birth Year'].ix[rownum6:]
+
+                    print('Birth Year : ',BD_current_itteration,'\n ---------\n')
+                
+                    rownum6= rownum6+ 1
+                    i = i+1
+        
+                whileformat6 = whileformat6+ 1
+            elif (ans == 'no'):
+                numb6 = numb6+ 1
+                print('However, most common birth regarding the entire data is {}'.format(BD2))
+            else :
+                print('Invalid input please try again, answer yes or no; if you want to represent the next 5 rows of data .. \n')
+
+#********End*Of*Loop***************
+        
+
+#*********************************Done***********************************************************
+
+print('-'*40)
+
+
+def main():
+    while True:
+        city, month, day = get_filters()
+        df = load_data(city, month, day)
+
+        time_stats(df,city)
+        station_stats(df,city)
+        trip_duration_stats(df,city)
+        user_stats(df,city)
+        user_gender(df,city)
+        user_BD(df,city)
+        #gender_condition(city)
+        #BD_condition(city)
+       
+        print("\n\nThis whole processing took %s seconds." % (time.time() - start_time),'\n\n')
+        restart = input('\nWould you like to restart? Enter yes or no.\n')
+        if restart.lower() != 'yes':
+            break
+
+
+if __name__ == "__main__":
+	main()
