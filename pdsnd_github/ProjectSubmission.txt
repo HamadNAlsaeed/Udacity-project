@@ -12,7 +12,7 @@ def get_filters():
     
     """
     Asks user to specify a city, month, and day to analyze.
-print ('(Refactor 1st) Welcome! , please provide us with below informations to serve you : ')
+print ('(Refactor 2nd) Welcome! , please provide us with below informations to serve you : ')
     Returns:
         (str) city - name of the city to analyze
         (str) month - name of the month to filter by, or "all" to apply no month filter
