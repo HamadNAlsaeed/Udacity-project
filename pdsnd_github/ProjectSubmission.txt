@@ -12,7 +12,7 @@ def get_filters():
     
     """
     Asks user to specify a city, month, and day to analyze.
-print ('Welcome! , please provide us with below informations to serve you : ')
+print ('Welcome! (Additional change 1st), please provide us with below informations to serve you : ')
     Returns:
         (str) city - name of the city to analyze
         (str) month - name of the month to filter by, or "all" to apply no month filter
@@ -24,7 +24,7 @@ print ('Welcome! , please provide us with below informations to serve you : ')
     # ask the user for city input
     number =1    
     while number == 1:
-        city = input("Please enter the desired city, and not a number: \n 1-Chicago \n 2-new york \n 3- washington \n please choose from the options with the correct spelling\n").lower()
+        city = input("(Additional change 2nd)Please enter the desired city, and not a number: \n 1-Chicago \n 2-new york \n 3- washington \n please choose from the options with the correct spelling\n").lower()
         if (city == 'chicago' or city == 'new york city' or city == 'washington'):
             number  = number + 1
         else:
